@@ -1,0 +1,6 @@
+runtime: go
+
+env_variables:
+  PUBSUB_TOPIC: test-duplicate
+  PUBSUB_SUBSCRIPTION: test-duplicate-subscription
+  HONEYBADGER_API_KEY: <HONEYBADGER_API_KEY>
