@@ -48,5 +48,3 @@ spec:
                   key: HONEYBADGER_API_KEY 
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/google/key.json
-
-
