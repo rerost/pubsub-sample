@@ -63,6 +63,7 @@ func subscribe(ctx context.Context) error {
 		defer conn.Close()
 
 		id := string(m.Data)
+		log.Printf("message received. id: %v", id)
 
 		reply, err := redis.Bool(conn.Do("EXISTS", id))
 		if err != nil {
