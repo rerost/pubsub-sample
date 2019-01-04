@@ -1,0 +1,45 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    rerost.com/deploy-target: "true"
+    rerost.com/deploy-target-container: web
+    rerost.com/github: web=rerost/pubsub-duplicate-sample
+  name: publisher
+  labels:
+    run: publisher
+    name: publisher
+    namespace: default
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: google-cloud-key
+              secret:
+                secretName: pubsub-key-publisher
+          containers:
+            - image: docker.io/rerost/pubsub-duplicate-sample:c4bacac5400b17fd2121c583a75ee63f0f0552d0
+              name: publisher
+              command: ["/app/bin/publisher"]
+              volumeMounts:
+                - name: google-cloud-key
+                  mountPath: /var/secrets/google
+              env:
+                - name: PUBSUB_TOPIC
+                  value: test-duplicate
+                - name: PUBSUB_SUBSCRIPTION
+                  value: test-duplicate-subscription
+                - name: GOOGLE_CLOUD_PROJECT
+                  value: k8s-test-219404
+                - name: HONEYBADGER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: pubsub-duplicate-sample-secret
+                      key: HONEYBADGER_API_KEY 
+                - name: GOOGLE_APPLICATION_CREDENTIALS
+                  value: /var/secrets/google/key.json
+          restartPolicy: OnFailure
