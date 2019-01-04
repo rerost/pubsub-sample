@@ -12,7 +12,7 @@ jobs:
       - setup_remote_docker
       - run: docker build -t rerost/pubsub-duplicate-sample:`git rev-parse HEAD` .
       - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-      - run: docker push rerost/pubsub-duplicate-sample:`git rev-parse HEAD
+      - run: docker push rerost/pubsub-duplicate-sample:`git rev-parse HEAD`
 
 
 workflows:
