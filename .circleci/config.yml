@@ -1,0 +1,15 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:18.09.0-ce-git
+    working_directory: /go/src/github.com/rerost/pubsub-duplicate-sample
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t rerost/pubsub-duplicate-sample:`git rev-parse HEAD` .
+      - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+      - run: docker push rerost/pubsub-duplicate-sample:`git rev-parse HEAD
