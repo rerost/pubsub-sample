@@ -13,7 +13,16 @@ jobs:
       - run: docker build -t rerost/pubsub-duplicate-sample:`git rev-parse HEAD` .
       - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
       - run: docker push rerost/pubsub-duplicate-sample:`git rev-parse HEAD`
-
+  latest:
+    docker:
+      - image: circleci/golang:1.11.3
+    working_directory: /go/src/github.com/rerost/pubsub-duplicate-sample
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t rerost/pubsub-duplicate-sample:latest .
+      - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+      - run: docker push rerost/pubsub-duplicate-sample:latest
 
 workflows:
   version: 2
@@ -21,3 +30,8 @@ workflows:
     jobs:
       - build:
           context: docker push
+      - release:
+          context: docker push
+          filters:
+            branches:
+              only: master
