@@ -4,8 +4,6 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: docker:18.09.0-ce-git
     working_directory: /go/src/github.com/rerost/pubsub-duplicate-sample
     steps:
       - checkout
