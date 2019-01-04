@@ -20,4 +20,4 @@ workflows:
   build:
     jobs:
       - build:
-        context: docker push
+          context: docker push
