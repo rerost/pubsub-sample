@@ -4,8 +4,8 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
     rerost.com/deploy-target: "true"
-    rerost.com/deploy-target-container: web
-    rerost.com/github: web=rerost/pubsub-duplicate-sample
+    rerost.com/deploy-target-container: subscriber
+    rerost.com/github: subscriber=rerost/pubsub-duplicate-sample
   name: subscriber
   labels:
     run: subscriber
