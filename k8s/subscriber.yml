@@ -4,10 +4,11 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
     rerost.com/deploy-target: "true"
-    rerost.com/deploy-target-container: subscriber
-    rerost.com/github: subscriber=rerost/pubsub-duplicate-sample
+    rerost.com/deploy-target-container: web
+    rerost.com/github: web=rerost/pubsub-duplicate-sample
   name: subscriber
   labels:
+    role: web 
     run: subscriber
     name: subscriber
     namespace: default
@@ -28,8 +29,8 @@ spec:
           secret:
             secretName: pubsub-key
       containers:
-        - image: rerost/pubsub-duplicate-sample:latest
-          name: subscriber
+        - image: rerost/pubsub-duplicate-sample:177dc936a116bb582d67978e963e0cbf68e8f8ca
+          name: web
           command: ["/app/bin/subscriber"]
           volumeMounts:
             - name: google-cloud-key
