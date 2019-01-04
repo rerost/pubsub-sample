@@ -29,7 +29,7 @@ spec:
           secret:
             secretName: pubsub-key
       containers:
-        - image: rerost/pubsub-duplicate-sample:177dc936a116bb582d67978e963e0cbf68e8f8ca
+        - image: rerost/pubsub-duplicate-sample:7ee73a60d73a2e87894d552b5c7b86894167cb48
           name: web
           command: ["/app/bin/subscriber"]
           volumeMounts:
