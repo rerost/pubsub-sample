@@ -2,16 +2,24 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/gomodule/redigo/redis"
 	"github.com/honeybadger-io/honeybadger-go"
 	"github.com/srvc/fail"
 )
 
+var redisPool *redis.Pool
+
 func init() {
 	honeybadger.Configure(honeybadger.Configuration{APIKey: os.Getenv("HONEYBADGER_API_KEY")})
+
+	redisPool = &redis.Pool{
+		Dial: func() (redis.Conn, error) { return redis.Dial("tcp", "redis:6379") },
+	}
 }
 
 func main() {
@@ -40,20 +48,38 @@ func run() int {
 func subscribe(ctx context.Context) error {
 	client, err := pubsub.NewClient(ctx, os.Getenv("GOOGLE_CLOUD_PROJECT"))
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
 	subName := os.Getenv("PUBSUB_SUBSCRIPTION")
 	if subName == "" {
 		log.Fatal("Prease set `PUBSUB_SUBSCRIPTION` in ENV")
+		return fmt.Errorf("Prease set `PUBSUB_SUBSCRIPTION` in ENV")
 	}
 	sub := client.Subscription(subName)
 
-	log.Println(sub)
 	err = sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
-		// TODO Check uniq
-		log.Printf("uuid: %s\n", m.Data)
+		conn := redisPool.Get()
+		defer conn.Close()
+
+		id := string(m.Data)
+		log.Printf("message received. id: %v", id)
+
+		reply, err := redis.Bool(conn.Do("EXISTS", id))
+		if err != nil {
+			honeybadger.Notify(err)
+		}
+
+		if reply {
+			honeybadger.Notify(fail.New("Find duplicate"), honeybadger.Context{"id": id, "subscription": subName})
+		}
+
+		conn.Send("INCR", id)
+		conn.Send("EXPIRE", id, 60*60)
+		if err := conn.Flush(); err != nil {
+			honeybadger.Notify(err)
+		}
+
 		m.Ack()
 	})
 

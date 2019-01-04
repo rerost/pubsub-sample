@@ -22,7 +22,7 @@ spec:
               secret:
                 secretName: pubsub-key-publisher
           containers:
-            - image: docker.io/rerost/pubsub-duplicate-sample:c4bacac5400b17fd2121c583a75ee63f0f0552d0
+            - image: rerost/pubsub-duplicate-sample:latest
               name: publisher
               command: ["/app/bin/publisher"]
               volumeMounts:

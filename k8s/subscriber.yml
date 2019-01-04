@@ -8,6 +8,7 @@ metadata:
     rerost.com/github: web=rerost/pubsub-duplicate-sample
   name: subscriber
   labels:
+    role: web 
     run: subscriber
     name: subscriber
     namespace: default
@@ -28,8 +29,8 @@ spec:
           secret:
             secretName: pubsub-key
       containers:
-        - image: docker.io/rerost/pubsub-duplicate-sample:c4bacac5400b17fd2121c583a75ee63f0f0552d0
-          name: subscriber
+        - image: rerost/pubsub-duplicate-sample:7ee73a60d73a2e87894d552b5c7b86894167cb48
+          name: web
           command: ["/app/bin/subscriber"]
           volumeMounts:
             - name: google-cloud-key
