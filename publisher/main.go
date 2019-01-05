@@ -53,7 +53,7 @@ func sendManyMessage(ctx context.Context) error {
 
 	var results []*pubsub.PublishResult
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1000000; i++ {
 		u, err := uuid.NewRandom()
 		if err != nil {
 			return err
