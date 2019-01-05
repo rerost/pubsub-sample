@@ -23,6 +23,7 @@ spec:
                 secretName: pubsub-key-publisher
           containers:
             - image: rerost/pubsub-duplicate-sample:latest
+              imagePullPolicy: Always
               name: publisher
               command: ["/app/bin/publisher"]
               volumeMounts:

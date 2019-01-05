@@ -30,6 +30,7 @@ spec:
             secretName: pubsub-key
       containers:
         - image: rerost/pubsub-duplicate-sample:latest
+          imagePullPolicy: Always
           name: web
           command: ["/app/bin/subscriber"]
           volumeMounts:
