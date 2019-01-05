@@ -65,22 +65,27 @@ func subscribe(ctx context.Context) error {
 		id := string(m.Data)
 		log.Printf("message received. id: %v", id)
 
-		reply, err := redis.Bool(conn.Do("EXISTS", id))
-		if err != nil {
-			honeybadger.Notify(err)
-		}
-
-		if reply {
-			honeybadger.Notify(fail.New("Find duplicate"), honeybadger.Context{"id": id, "subscription": subName})
-		}
-
 		conn.Send("INCR", id)
 		conn.Send("EXPIRE", id, 60*60)
 		if err := conn.Flush(); err != nil {
+			log.Printf("Failed to exec redis cmd incr & expire")
 			honeybadger.Notify(err)
+			m.Nack()
 		}
 
 		m.Ack()
+
+		count, err := redis.Int64(conn.Do("GET", id))
+		if err != nil {
+			honeybadger.Notify(err, honeybadger.Context{"id": id, "subscription": subName})
+			log.Printf("Failed to exec redis cmd get")
+			return
+		}
+
+		if count > 1 {
+			honeybadger.Notify(fail.New("Find duplicate"), honeybadger.Context{"id": id, "subscription": subName, "count": count})
+			log.Printf("Find duplicate")
+		}
 	})
 
 	if err != nil {
