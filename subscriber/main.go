@@ -18,8 +18,10 @@ func init() {
 	honeybadger.Configure(honeybadger.Configuration{APIKey: os.Getenv("HONEYBADGER_API_KEY")})
 
 	redisPool = &redis.Pool{
-		Wait: true,
-		Dial: func() (redis.Conn, error) { return redis.Dial("tcp", "redis:6379") },
+		MaxActive: 100,
+		MaxIdle:   100,
+		Wait:      true,
+		Dial:      func() (redis.Conn, error) { return redis.Dial("tcp", "redis:6379") },
 	}
 }
 
