@@ -42,5 +42,5 @@ spec:
                       name: pubsub-duplicate-sample-secret
                       key: HONEYBADGER_API_KEY 
                 - name: GOOGLE_APPLICATION_CREDENTIALS
-                  value: /var/secrets/google/key.json
+                  value: /var/secrets/google/pubsub-key-publisher.json
           restartPolicy: OnFailure

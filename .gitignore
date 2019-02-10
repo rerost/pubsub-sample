@@ -1,2 +1,4 @@
 .env
 k8s/secret.yml
+pubsub-key-publisher.json
+pubsub-key-subscriber.json
