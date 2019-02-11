@@ -30,8 +30,6 @@ spec:
                 - name: google-cloud-key
                   mountPath: /var/secrets/google
               env:
-                - name: PUBSUB_EMULATOR_HOST
-                  value: 10.35.249.195:8085
                 - name: PUBSUB_TOPIC
                   value: test-duplicate
                 - name: PUBSUB_SUBSCRIPTION

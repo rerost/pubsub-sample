@@ -51,7 +51,7 @@ func run() int {
 }
 
 func subscribe(ctx context.Context) error {
-	conn, err := grpc.Dial("localhost:5000")
+	conn, err := grpc.Dial("localhost:5000", grpc.WithInsecure())
 	if err != nil {
 		return err
 	}

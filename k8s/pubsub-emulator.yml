@@ -37,7 +37,7 @@ metadata:
   name: pubsub-emulator
 spec:
   selector:
-    name: pubsub-emulator
+    run: pubsub-emulator
   ports:
   - protocol: TCP
     port: 8085
