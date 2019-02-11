@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  name: pubsub-emulator
+  labels:
+    role: web
+    run: pubsub-emulator 
+    name: pubsub-emulator
+    namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: pubsub-emulator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        run: pubsub-emulator
+    spec:
+      containers:
+        - image: google/cloud-sdk:216.0.0
+          imagePullPolicy: Always
+          name: web
+          command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085"]
+          ports:
+          - containerPort: 8085
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: pubsub-emulator
+spec:
+  selector:
+    run: pubsub-emulator
+  ports:
+  - protocol: TCP
+    port: 8085
+    targetPort: 8085
+  type: ClusterIP

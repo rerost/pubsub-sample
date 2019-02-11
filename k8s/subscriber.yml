@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -29,6 +29,21 @@ spec:
           secret:
             secretName: pubsub-key-subscriber
       containers:
+        - image: rerost/chaos-pubsub:latest
+          imagePullPolicy: Always
+          name: chaos-pubsub
+          command: ["/app/bin/server"]
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: k8s-test-219404
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/pubsub-key-subscriber.json
+          ports:
+          - containerPort: 5000
+
         - image: rerost/pubsub-duplicate-sample:latest
           imagePullPolicy: Always
           name: web
@@ -50,7 +65,6 @@ spec:
                   key: HONEYBADGER_API_KEY 
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /var/secrets/google/pubsub-key-subscriber.json
-
 ---
 
 apiVersion: autoscaling/v2beta1

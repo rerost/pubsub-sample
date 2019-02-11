@@ -10,6 +10,8 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/honeybadger-io/honeybadger-go"
 	"github.com/srvc/fail"
+	"google.golang.org/api/option"
+	"google.golang.org/grpc"
 )
 
 var redisPool *redis.Pool
@@ -49,7 +51,12 @@ func run() int {
 }
 
 func subscribe(ctx context.Context) error {
-	client, err := pubsub.NewClient(ctx, os.Getenv("GOOGLE_CLOUD_PROJECT"))
+	conn, err := grpc.Dial("localhost:5000", grpc.WithInsecure())
+	if err != nil {
+		return err
+	}
+
+	client, err := pubsub.NewClient(ctx, os.Getenv("GOOGLE_CLOUD_PROJECT"), option.WithGRPCConn(conn))
 	if err != nil {
 		return err
 	}
