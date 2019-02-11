@@ -29,6 +29,22 @@ spec:
           secret:
             secretName: pubsub-key-subscriber
       containers:
+        - image: rerost/chaos-pubsub:latest
+          imagePullPolicy: Always
+          name: web
+          command: ["/app/bin/server"]
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: k8s-test-219404
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/pubsub-key-subscriber.json
+            - name: PUBSUB_EMULATOR_HOST
+              value: 10.35.249.195:8085
+          ports:
+          - containerPort: 5000
         - image: rerost/pubsub-duplicate-sample:latest
           imagePullPolicy: Always
           name: web
